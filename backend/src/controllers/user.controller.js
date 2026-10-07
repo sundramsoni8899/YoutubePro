@@ -5,6 +5,8 @@ import { User } from "../models/user.model.js";
 
 import jwt from "jsonwebtoken";
 
+import {uploadOnCloudinary} from "../utils/cloudinary.js";
+
 const registerUser = asyncHandler(async (req, res) => {
     const {fullName, email, username, password} = req.body
     if([fullName, email, username, password].some((field)=>field?.trim() === "" || field === undefined))
@@ -23,13 +25,28 @@ const registerUser = asyncHandler(async (req, res) => {
     {
         throw new ApiError(400, "User with email or username already exists");
     }
-    const dummyAvatar = `https://dicebar.com/${username}`
+    const avatarLocalPath = req.files?.avatar?.[0]?.path;
+    const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
+    if(!avatarLocalPath){
+        throw new ApiError(400, "Avatar image is required");
+    }
+    const avatar = await uploadOnCloudinary(avatarLocalPath)
+
+    let coverImage = null;
+    if(coverImageLocalPath){
+        coverImage = await uploadOnCloudinary(coverImageLocalPath)
+    }
+    if(!avatar){
+        throw new ApiError(500, "Failed to upload avatar image");
+    }
+
     const user = await User.create({
         fullName,
         email,
         username: username.toLowerCase(),
         password,
-        avatar: dummyAvatar
+        avatar: avatar.secure_url,
+        coverImage: coverImage?.secure_url || ""
     });
     const createdUser = await User.findById(user._id).select("-password -refreshToken")
     if(!createdUser)
