@@ -104,16 +104,11 @@ const loginUser = asyncHandler(async(req, res)=>{
 
 
 const logoutUser = asyncHandler(async(req, res)=>{
-    const token = req.cookies?.accessToken
+    const userId = req.user?._id
 
-    if(!token){
-        throw new ApiError(401, "Unauthorized access request")
-    }
-
-    const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET || "FALLBACK ACESS SECRET")
-
+    
     await User.findByIdAndUpdate(
-        decodedToken._id,
+        userId,
         {
             $unset: {
                 refreshToken: 1 // Removes the field entirely from the database document
