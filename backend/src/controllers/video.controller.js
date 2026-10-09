@@ -68,5 +68,104 @@ const publishAVideo = asyncHandler(async(req, res)=>{
     .json(new ApiResponse(201, publishedVideo, "Video published and hosted successfully!"))
 })
 
-export {publishAVideo
+const getVideoById = asyncHandler(async(req, res)=>{
+    const {videoId} = req.params
+
+    if(!videoId?.trim()){
+        throw new ApiError(400, "Invalid video identification sequence parametere.")
+    }
+    const video = await Video.findByIdAndUpdate(
+        videoId,
+        {
+            $inc:{views:1}
+        },
+        {
+            returnDocument: "after"
+        }
+    ).populate("owner", "username fullname avatar")
+    if(!video){
+        throw new ApiError(404, "Target video does not exist in database cluster.")
+    }
+     return res
+        .status(200)
+        .json(new ApiResponse(200, video, "Video insights retrieved and view counter incremented successfully!"));
+})
+
+const updateVideoDetails = asyncHandler(async(req, res)=>{
+    const {videoId}= req.params;
+    const {title, description}= req.body;
+    const thumbnailLocalPath= req.file?.path
+
+    if(!videoId?.trim()){
+         throw new ApiError(400, "Video target identifier is required.")
+    }
+     if (!title && !description && !thumbnailLocalPath) {
+        throw new ApiError(400, "At least one attribute (title, description, or thumbnail) is required to perform an update.");
+    }
+
+    const existingVideo = await Video.findById(videoId);
+    if (!existingVideo) {
+        throw new ApiError(404, "Video document not found.");
+    }
+
+    if(existingVideo.owner.toString()!== req.user?._id.toString()){
+         throw new ApiError(403, "Unauthorized Action. You do not own this media asset.");
+    }
+
+    const updateFields = {};
+     if (title && title.trim() !== "") updateFields.title = title;
+    if (description && description.trim() !== "") updateFields.description = description;
+    if(thumbnailLocalPath){
+        const newThumbnail = await uploadOnCloudinary(thumbnailLocalPath);
+
+        if(!newThumbnail?.secure_url){
+             throw new ApiError(500, "Failed to upload new thumbnail preview file to cloud buckets.");
+        }
+        updateFields.thumbnail= newThumbnail.secure_url
+        
+    }
+
+    const updatedVideo = await Video.findByIdAndUpdate(
+        videoId,
+        {
+            $set: updateFields
+        },
+        {
+            returnDocument: "after"
+        }
+    ).populate("owner", "username, fullName, avatar")
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, updatedVideo, "Video metadata attributes updated and aligned successfully."))
+
+    
+
+})
+
+const deleteVideo = asyncHandler(async(req, res)=>{
+        const {videoId} = req.params
+        if(!videoId?.trim()){
+             throw new ApiError(400, "Video identifier parameter is invalid.");
+        }
+
+         const video = await Video.findById(videoId);
+    if (!video) {
+        throw new ApiError(404, "Target video asset not found.");
+    }
+    if (video.owner.toString() !== req.user?._id.toString()) {
+        throw new ApiError(403, "Unauthorized Request. Asset elimination rejected.");
+    }
+    await Video.findByIdAndDelete(videoId);
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, {}, "Video record eliminated from database node successfully."));
+    })
+
+
+export {publishAVideo,
+    getVideoById,
+    updateVideoDetails,
+    deleteVideo
 }

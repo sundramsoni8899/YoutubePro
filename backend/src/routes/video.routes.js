@@ -1,5 +1,10 @@
 import {Router} from 'express';
-import { publishAVideo } from '../controllers/video.controller.js';
+import { publishAVideo
+    ,
+    getVideoById,
+    updateVideoDetails,
+    deleteVideo
+ } from '../controllers/video.controller.js';
 
 import { verifyJWT } from '../middlewares/auth.middleware.js';
 
@@ -22,4 +27,10 @@ router.route("/publish").post(
     ]), 
     publishAVideo
 )
+
+router.route("/:videoId")
+    .get(getVideoById)
+    .patch(upload.single("thumbnail"), updateVideoDetails)
+    .delete(deleteVideo)
+
 export default router;
