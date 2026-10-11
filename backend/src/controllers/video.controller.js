@@ -164,8 +164,93 @@ const deleteVideo = asyncHandler(async(req, res)=>{
     })
 
 
+const getAllVideos = asyncHandler(async(req, res)=>{
+    const {page=1, limit=10, query, sortBy="createdAt", sortType="desc", userId}= req.query
+
+    const pipeline=[];
+
+    const matchStage={};
+
+    matchStage.isPublished= true;
+
+    if(userId){
+        matchStage.owner = new mongoose.Types.ObjectId(userId?.trim())
+
+    }
+
+    if(query && query.trim() !== ""){
+        matchStage.$or=[
+            {title:{$regex: query.trim(), $options:"i"}},
+            { description: { $regex: query.trim(), $options: "i" } }
+        ]
+    }
+
+    pipeline.push({$match: matchStage})
+
+    pipeline.push({
+        $lookup:{
+            from: "users",
+            localField: "owner",
+            foreignField:"_id",
+            as:"ownerDetails"
+        }
+    });
+
+    pipeline.push({
+        $unwind:{
+            path: "$ownerDetails",
+            preserveNullAndEmptyArrays: true
+        }
+    })
+
+    pipeline.push({
+        $project:{
+            videoFile: 1,
+            thumbnail: 1,
+            title: 1,
+            description: 1,
+            duration: 1,
+            views: 1,
+            isPublished: 1,
+            createdAt: 1,
+            updatedAt: 1,
+            owner: {
+                _id: "$ownerDetails._id",
+                username: "$ownerDetails.username",
+                fullName: "$ownerDetails.fullName",
+                avatar: "$ownerDetails.avatar"
+            }
+
+        }
+    })
+
+    const sortStage={};
+    sortStage[sortBy]= sortType==="asc"?1:-1;
+    pipeline.push({$sort: sortStage})
+
+    const aggregateQuery = Video.aggregate(pipeline)
+    
+    const options={
+        page: parseInt(page, 10) || 1,
+        limit: parseInt(limit, 10) || 10
+    }
+     const result = await Video.aggregatePaginate(aggregateQuery, options);
+
+    
+
+    if (!result) {
+        throw new ApiError(500, "Database aggregation engine processing failure loops crash.");
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, result, "Video feeds query pipeline executed and paginated successfully!"));
+})
+
+
 export {publishAVideo,
     getVideoById,
     updateVideoDetails,
-    deleteVideo
+    deleteVideo,
+    getAllVideos
 }
