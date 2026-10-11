@@ -3,7 +3,8 @@ import { publishAVideo
     ,
     getVideoById,
     updateVideoDetails,
-    deleteVideo
+    deleteVideo,
+    getAllVideos
  } from '../controllers/video.controller.js';
 
 import { verifyJWT } from '../middlewares/auth.middleware.js';
@@ -32,5 +33,7 @@ router.route("/:videoId")
     .get(getVideoById)
     .patch(upload.single("thumbnail"), updateVideoDetails)
     .delete(deleteVideo)
+
+router.route("/").get(getAllVideos);
 
 export default router;
