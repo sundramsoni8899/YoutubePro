@@ -1,6 +1,6 @@
 import {Router} from "express";
 
-import {registerUser, loginUser, logoutUser} from "../controllers/user.controller.js";
+import {registerUser, loginUser, logoutUser, getUserChannelProfile} from "../controllers/user.controller.js";
 
 import {upload} from "../middlewares/multer.middlewares.js";
 
@@ -23,5 +23,6 @@ registerUser
 )
 router.route("/login").post(loginUser);
 router.route("/logout").post(verifyJWT, logoutUser);
+router.route("/c/:username").get(verifyJWT, getUserChannelProfile)
 
 export default router;
