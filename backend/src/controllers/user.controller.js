@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import {ApiError} from "../utils/ApiError.js";
@@ -199,4 +201,85 @@ const getUserChannelProfile = asyncHandler(async(req, res)=>{
 
 })
 
-export { registerUser, loginUser,logoutUser, getUserChannelProfile };
+
+const getWatchHistory = asyncHandler(async(req, res)=>{
+    const userId = req.user?._id;
+
+    const userHistory = await User.aggregate([
+        {
+            $match:{
+                _id: new mongoose.Types.ObjectId(userId)
+            }
+        },
+        {
+            $lookup:{
+                from: "videos",
+                localField: "watchHistory",
+                foreignField:"_id",
+                as: "watchHistory"
+            }
+        },
+        {
+            $lookup:{
+                from: "users",
+                localField: "watchHistory.owner",
+                foreignField:"_id",
+                as:"ownerDetails"
+            }
+        },
+
+        {
+            $project:{
+                watchHistory:{
+                    $map:{
+                        input: "$watchHistory",
+                        as:"video",
+                        in:{
+                            _id: "$$video._id",
+                            videoFile: "$$video.videoFile",
+                            thumbnail: "$$video.thumbnail",
+                            title:"$$video.title",
+                            description: "$$video.description",
+                            duration:"$$video.duration",
+                            views: "$$video.views",
+                            createdAt: "$$video.createdAt",
+
+                            owner:{
+                                $arrayElemAt:[
+                                    {
+                                        $filter:{
+                                            input: "$ownerDetails",
+                                            as:"owner",
+                                            cond:{$eq: ["$$owner._id", "$$video.owner"]}
+                                        }
+                                    },
+                                    0
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        {
+            $project: {
+                "watchHistory.owner.password": 0,
+                "watchHistory.owner.refreshToken": 0,
+                "watchHistory.owner.email": 0
+            }
+        }
+    ]);
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200, 
+                userHistory[0]?.watchHistory || [], 
+                "User video watch history metrics timeline retrieved successfully!"
+            )
+        );
+})
+
+export { registerUser, loginUser,logoutUser, getUserChannelProfile, getWatchHistory };
