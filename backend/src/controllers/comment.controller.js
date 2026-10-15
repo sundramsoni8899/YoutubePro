@@ -21,7 +21,7 @@ const getVideoComments = asyncHandler(async (req, res) => {
                 video: new mongoose.Types.ObjectId(videoId)
             }
         },
-       
+       // comment ko upar dikhne ke liye jo new commnet aaye
         {
             $sort: {
                 createdAt: -1
@@ -114,7 +114,7 @@ const deleteComment = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Target comment entity records not found.");
     }
 
-    if (comment.owner.toString() !== userId.toString()) {
+    if (comment.owner.toString() !== userId.toString() && Video.owner.toString() !== userId.toString()) {
         throw new ApiError(403, "Unauthorized Action. Operation code rejection loop.");
     }
 
