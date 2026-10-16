@@ -45,7 +45,8 @@ const addVideoToPlaylist = asyncHandler(async (req, res) => {
     if (!playlist) {
         throw new ApiError(404, "Target playlist records not found.");
     }
-
+     
+    // Koi doosra user kisi aur ki playlist mein zabardasti apni video add na kar de, isliye check karte hain
     if (playlist.owner.toString() !== userId.toString()) {
         throw new ApiError(403, "Unauthorized Request. Ownership verification validation failure.");
     }
@@ -55,7 +56,7 @@ const addVideoToPlaylist = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Target video asset document not found.");
     }
 
-    
+    //  playlist mein doosri baar add karne ki koshish 
     if (playlist.videos.includes(videoId)) {
         throw new ApiError(400, "Target video reference is already present in this playlist folder.");
     }
