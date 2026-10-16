@@ -30,5 +30,24 @@ const uploadOnCloudinary = async(localFilePath)=>{
 }
 
 
+const deleteFromCloudinary = async(publicId, resourceType = "image")=>{
+    try{
+        if(!publicId) return null;
 
-export {uploadOnCloudinary}
+        const response = await cloudinary.uploader.destroy(publicId, {
+            resource_type: resourceType
+        })
+
+        return response;
+
+    } catch(error){
+        console.error("[CLOUDINARY WIPEOUT FAILURE LOG]:", error.message || error);
+
+        return null
+
+    }
+}
+
+
+
+export {uploadOnCloudinary, deleteFromCloudinary}

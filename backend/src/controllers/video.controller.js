@@ -145,6 +145,8 @@ const updateVideoDetails = asyncHandler(async(req, res)=>{
 
 const deleteVideo = asyncHandler(async(req, res)=>{
         const {videoId} = req.params
+
+        const userId = req.user?._id;
         if(!videoId?.trim()){
              throw new ApiError(400, "Video identifier parameter is invalid.");
         }
@@ -155,6 +157,19 @@ const deleteVideo = asyncHandler(async(req, res)=>{
     }
     if (video.owner.toString() !== req.user?._id.toString()) {
         throw new ApiError(403, "Unauthorized Request. Asset elimination rejected.");
+    }
+     
+    // cloudinary se bhi data delete karne ke liye
+
+    const videoPublicId = video.videoFile.split("/").pop().split(".")[0];
+    const thumbnailPublicId = video.thumbnail.split("/").pop().split(".")[0]
+
+    if (videoPublicId) {
+        await deleteFromCloudinary(videoPublicId, "video"); // 
+    }
+
+     if (thumbnailPublicId) {
+        await deleteFromCloudinary(thumbnailPublicId, "image");
     }
     await Video.findByIdAndDelete(videoId);
 
