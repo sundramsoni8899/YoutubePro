@@ -282,4 +282,19 @@ const getWatchHistory = asyncHandler(async(req, res)=>{
         );
 })
 
-export { registerUser, loginUser,logoutUser, getUserChannelProfile, getWatchHistory };
+const getCurrentUser = asyncHandler(async (req, res) => {
+    
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200, 
+                req.user, 
+                "Authenticated current user session details fetched successfully!"
+            )
+        );
+});
+
+export { registerUser, loginUser,logoutUser, getUserChannelProfile, getWatchHistory,
+    getCurrentUser
+};

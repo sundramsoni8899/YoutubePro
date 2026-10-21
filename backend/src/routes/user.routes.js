@@ -1,6 +1,6 @@
 import {Router} from "express";
 
-import {registerUser, loginUser, logoutUser, getUserChannelProfile, getWatchHistory} from "../controllers/user.controller.js";
+import {registerUser, loginUser, logoutUser, getUserChannelProfile, getWatchHistory, getCurrentUser} from "../controllers/user.controller.js";
 
 import {upload} from "../middlewares/multer.middlewares.js";
 
@@ -25,5 +25,6 @@ router.route("/login").post(loginUser);
 router.route("/logout").post(verifyJWT, logoutUser);
 router.route("/c/:username").get(verifyJWT, getUserChannelProfile);
 router.route("/watchHistory").get(verifyJWT, getWatchHistory);
+router.route("/current-user").get(verifyJWT, getCurrentUser);
 
 export default router;
