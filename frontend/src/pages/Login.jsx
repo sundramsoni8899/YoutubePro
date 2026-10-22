@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom"; // 👈 Link import kiya registration page ke liye
 import { useAuth } from "../context/AuthContext";
 import apiClient from "../api/apiClient";
 
@@ -19,7 +19,6 @@ export default function Login() {
     // ⚙️ UNIVERSAL INPUT PARAMETERS BINDING HANDLER
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        // Dynamically evaluation text strings into form object variables keys flawlessly
         setFormData((prev) => ({
             ...prev,
             [name]: value
@@ -54,16 +53,15 @@ export default function Login() {
             // Fire transport layer action straight to backend endpoint channel port 7000
             const response = await apiClient.post("/users/login", payload);
 
-            if (response?.data) {
-                // 🔥 THEHandshake Handshake: Hydrate central memory store layers instantly
+            // 🚨 Sahi structure check: Hamein ApiResponse ke data se user uthana hai
+            if (response?.success) {
                 setUser(response.data.user);
                 setIsAuthenticated(true);
                 
                 // Seamlessly route user back inside the secure root layout grids path panel
-                navigate("/");
+                window.location.href = "/"; 
             }
         } catch (err) {
-            // Track error responses returned out of backend global exception layers
             setError(err?.message || "Invalid authentication handshake references. Connection rejected.");
         } finally {
             setSubmitLoading(false);
@@ -129,6 +127,7 @@ export default function Login() {
                     </div>
 
                     <div>
+                        {/* 🛠️ Cleaned duplicate buttons - Sirf ek perfect single action button rakha! */}
                         <button
                             type="submit"
                             disabled={submitLoading}
@@ -139,6 +138,17 @@ export default function Login() {
                             ) : "Execute Handshake Connection"}
                         </button>
                     </div>
+
+                    {/* 🔥 THE NEW USER REGISTRATION LINK TRIGGER (Properly closed syntax alignment) */}
+                    <p className="mt-4 text-center text-xs text-zinc-400">
+                        New user to YouTube PRO?{" "}
+                        <Link 
+                            to="/register" 
+                            className="text-white font-bold cursor-pointer hover:underline transition-all duration-150"
+                        >
+                            Create an account
+                        </Link>
+                    </p>
                 </form>
             </div>
         </div>
