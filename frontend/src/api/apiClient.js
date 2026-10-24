@@ -25,13 +25,13 @@ apiClient.interceptors.request.use(
 // Response Interceptor
 apiClient.interceptors.response.use(
     (response) => {
-        // Hitesh sir ke standard wrapper me response.data return karna sahi hai
+        
         return response?.data;
     },
     async (error) => {
         const originalRequest = error.config;
 
-        // 🔥 CRITICAL LOOP FIX: Agar request pehle se hi current-user ya refresh-token ki hai, 
+        // CRITICAL LOOP FIX: Agar request pehle se hi current-user ya refresh-token ki hai, 
         // to use silent rotation me mat daalo, seedhe error catch block me bhejo.
         if (
             originalRequest.url.includes("/users/current-user") || 
@@ -47,7 +47,7 @@ apiClient.interceptors.response.use(
             try {
                 const baseURL = import.meta.env.VITE_BACKEND_URL || "http://localhost:7000/api/v1";
                 
-                // 🔥 ENDPOINT FIX: Base URL ke aage sahi endpoint lagaya (/users/refresh-token)
+                //  ENDPOINT FIX: Base URL ke aage sahi endpoint lagaya (/users/refresh-token)
                 await axios.post(
                     `${baseURL}/users/refresh-token`,
                     {},
@@ -57,7 +57,7 @@ apiClient.interceptors.response.use(
                 // Token refresh hone ke baad original API ko fir se hit karein
                 return apiClient(originalRequest);
             } catch (refreshError) {
-                console.error("🚨 [CRITICAL NETWORK HANDSHAKE DISASTER]: Silent re-auth token rotation failed.", refreshError);
+                console.error(" [CRITICAL NETWORK HANDSHAKE DISASTER]: Silent re-auth token rotation failed.", refreshError);
                 
                 // Agar refresh token bhi expire ho chuka hai, tabhi login par bhejein
                 if (typeof window !== "undefined") {

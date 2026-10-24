@@ -4,7 +4,9 @@ import RootLayout from "./layouts/RootLayout.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import PublicRoute from "./components/PublicRoute.jsx";
 import Login from "./pages/Login.jsx";    
-import Register from "./pages/Register.jsx"; // 👈 Sahi register path import hai
+import Register from "./pages/Register.jsx"; //  Sahi register path import hai
+
+import Home from "./pages/Home.jsx";
 
 export default function App() {
     return (
@@ -38,6 +40,8 @@ export default function App() {
                     
                     {/* 🔥 THE ABSOLUTE ROUTING FIX: Added register route mapping path */}
                     <Route path="/register" element={<Register />} />
+
+                    <Route path="/home" element={<Home />} />
                 </Route>
                 
 
