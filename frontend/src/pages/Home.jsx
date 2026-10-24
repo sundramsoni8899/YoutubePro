@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react"
 
 import apiClient from "../api/apiClient.js"
 
-import { fomatDistanceToNow } from "../utils/formatDistanceToNow.js"
+import { formatDistanceToNow } from "../utils/formatDistanceToNow.js"
 
 export default function Home(){
     const [videos, setVideos] = useState([])
@@ -36,7 +36,7 @@ export default function Home(){
             }
         }
         fetchHomeFeedVideos()
-    }, [paginationInfo])
+    }, [])
 
     if(loading){
         return(

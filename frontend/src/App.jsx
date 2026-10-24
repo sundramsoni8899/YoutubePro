@@ -4,51 +4,61 @@ import RootLayout from "./layouts/RootLayout.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import PublicRoute from "./components/PublicRoute.jsx";
 import Login from "./pages/Login.jsx";    
-import Register from "./pages/Register.jsx"; //  Sahi register path import hai
-
+import Register from "./pages/Register.jsx"; 
 import Home from "./pages/Home.jsx";
+import { useAuth } from "./context/AuthContext.jsx"; // Global identity observer check import kiya
 
 export default function App() {
+    const { isAuthenticated, loading } = useAuth();
+
+    // Re-hydration check guard: Jab tak async token loading chalu hai, tab tak blank rendering rok kar spinner bitha do
+    if (loading) {
+        return (
+            <div className="flex min-h-screen items-center justify-center bg-[#0f0f0f]">
+                <div className="h-12 w-12 animate-spin rounded-full border-4 border-t-transparent border-white"></div>
+            </div>
+        );
+    }
+
     return (
         <BrowserRouter>
             <Routes>
-                
-                {/* 🔒 PROTECTED ROUTING LAYER: Sirf logged-in users ke liye access open hoga */}
+                {/* 🧭 GLOBAL ENTRANCE ROUTE REDIRECTION GATEWAY */}
+                {/* 🔥 THE ABSOLUTE RE-ARRANGEMENT: Dynamic condition setup based on live login states */}
+                <Route 
+                    path="/" 
+                    element={isAuthenticated ? <Navigate to="/home" replace /> : <Navigate to="/login" replace />} 
+                />
+
+                {/* 🔒 PHASE A: SECURE PROTECTED PLATFORM VIEWS (REQUIRES AUTH HANDSHAKE COOKIES) */}
                 <Route element={<ProtectedRoute />}>
                     <Route element={<RootLayout />}>
+                        {/* Real video aggregation feed connected flawlessly */}
+                        <Route path="/home" element={<Home />} />
                         
-                        {/* 1. Dashboard Home Feed Path */}
-                        <Route path="/" element={
-                            <div className="text-2xl font-bold text-white p-6 antialiased">
-                                🔥 Live Home Feed Aggregations Analytics Loading...
-                            </div>
-                        } />
-                        
-                        {/* 2. Creator Analytics Studio Path */}
                         <Route path="/studio" element={
                             <div className="text-2xl font-bold text-red-500 p-6 antialiased">
                                 📊 Production Creator Studio Controller Active
                             </div>
                         } />
-
                     </Route>
                 </Route>
 
-                {/* 🔓 PUBLIC ROUTING LAYER: Bina login ke sirf guests ke liye open hoga */}
+                {/* 🔓 PHASE B: PUBLIC ACCESS BOUNDS ONLY (RESTRICTED FOR LOGGED-IN PROFILES) */}
                 <Route element={<PublicRoute />}>
                     <Route path="/login" element={<Login />} />
-                    
-                    {/* 🔥 THE ABSOLUTE ROUTING FIX: Added register route mapping path */}
                     <Route path="/register" element={<Register />} />
-
-                    <Route path="/home" element={<Home />} />
                 </Route>
                 
 
                 {/* 🛡️ THE SECURITY FALLBACK GUARD MATRICES */}
-                {/* Agar user random URL type karega, to safely login page par redirect hoga. */}
-                <Route path="*" element={<Navigate to="/login" replace />} />
+                {/* Agar random kuch bhi galat URL type hoga, to user safely login/home par conditional automatic transfer ho jayega */}
+                <Route 
+                    path="*" 
+                    element={isAuthenticated ? <Navigate to="/home" replace /> : <Navigate to="/login" replace />} 
+                />
             </Routes>
         </BrowserRouter>
     );
 }
+

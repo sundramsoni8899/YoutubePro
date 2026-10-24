@@ -1,4 +1,4 @@
-export const fomatDistanceToNow =(dateString)=>{
+export const formatDistanceToNow =(dateString)=>{
     if(!dateString) return "";
 
     const now = new Date()
