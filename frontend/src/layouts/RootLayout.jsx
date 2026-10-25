@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet,Link } from "react-router-dom";
 
 import VideoUploadModal from "../components/videoUploadModal.jsx";
 
@@ -27,9 +27,12 @@ export default function RootLayout() {
                 
                 <aside className="sticky top-14 hidden h-[calc(100vh-3.5rem)] w-60 flex-col border-r border-zinc-800 bg-[#0f0f0f] p-4 text-sm font-medium text-zinc-300 sm:flex">
                     <nav className="flex flex-col gap-2">
-                        <div className="rounded-lg bg-zinc-800 px-3 py-2 text-white shadow-sm cursor-pointer transition-all hover:bg-zinc-700">Home Feeds</div>
-                        <div className="rounded-lg px-3 py-2 cursor-pointer transition-all hover:bg-zinc-800 hover:text-white"> Video Studio</div>
-                        <div className="rounded-lg px-3 py-2 cursor-pointer transition-all hover:bg-zinc-800 hover:text-white"> Playlists Vault</div>
+                        <Link to="/home" className="rounded-lg px-3 py-2 cursor-pointer transition-all hover:bg-zinc-800 hover:text-white block font-medium">
+                                  🍿 Home Feeds
+                        </Link>
+    <Link to="/studio" className="rounded-lg px-3 py-2 cursor-pointer transition-all hover:bg-zinc-800 hover:text-white block font-medium">
+        🚀 Video Studio
+    </Link>
                     </nav>
                 </aside>
 

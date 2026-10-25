@@ -8,6 +8,8 @@ import Register from "./pages/Register.jsx";
 import Home from "./pages/Home.jsx";
 import { useAuth } from "./context/AuthContext.jsx"; // Global identity observer check import kiya
 
+import Studio from "./pages/Studio.jsx";
+
 export default function App() {
     const { isAuthenticated, loading } = useAuth();
 
@@ -36,11 +38,8 @@ export default function App() {
                         {/* Real video aggregation feed connected flawlessly */}
                         <Route path="/home" element={<Home />} />
                         
-                        <Route path="/studio" element={
-                            <div className="text-2xl font-bold text-red-500 p-6 antialiased">
-                                📊 Production Creator Studio Controller Active
-                            </div>
-                        } />
+                        <Route path="/studio" element={<Studio />} />
+                        
                     </Route>
                 </Route>
 
