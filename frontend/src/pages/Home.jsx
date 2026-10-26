@@ -4,6 +4,8 @@ import apiClient from "../api/apiClient.js"
 
 import { formatDistanceToNow } from "../utils/formatDistanceToNow.js"
 
+import { useNavigate } from "react-router-dom"
+
 export default function Home(){
     const [videos, setVideos] = useState([])
 
@@ -15,6 +17,8 @@ export default function Home(){
         page: 1,
         totalPages: 1
     })
+
+    const navigate = useNavigate()
 
     useEffect(()=>{
         const fetchHomeFeedVideos = async()=>{
@@ -69,7 +73,11 @@ export default function Home(){
             <div className="grid grid-cols-1 gap-x-4 gap-y-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 transition-all duration-300">
                 {videos.map((video) => (
                     // Always inject unique identification hex string as the 'key' property
-                    <div key={video._id} className="group flex flex-col gap-2 cursor-pointer">
+                    <div 
+            key={video._id} 
+            onClick={() => navigate(`/video/${video._id}`)} 
+            className="group flex flex-col gap-2 cursor-pointer"
+        >
                         
                         {/* A. THUMBNAIL LAYOUT MATRIX BOX */}
                         <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-zinc-900 border border-zinc-800">

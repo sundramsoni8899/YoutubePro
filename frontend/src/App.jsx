@@ -10,6 +10,8 @@ import { useAuth } from "./context/AuthContext.jsx"; // Global identity observer
 
 import Studio from "./pages/Studio.jsx";
 
+import VideoDetail from "./pages/VideoDetail.jsx";
+
 export default function App() {
     const { isAuthenticated, loading } = useAuth();
 
@@ -39,6 +41,8 @@ export default function App() {
                         <Route path="/home" element={<Home />} />
                         
                         <Route path="/studio" element={<Studio />} />
+
+                        <Route path="/video/:videoId" element={<VideoDetail />} />
                         
                     </Route>
                 </Route>
