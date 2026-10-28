@@ -11,6 +11,7 @@ import { useAuth } from "./context/AuthContext.jsx"; // Global identity observer
 import Studio from "./pages/Studio.jsx";
 
 import VideoDetail from "./pages/VideoDetail.jsx";
+import Playlists from "./pages/Playlists.jsx";
 
 export default function App() {
     const { isAuthenticated, loading } = useAuth();
@@ -43,6 +44,8 @@ export default function App() {
                         <Route path="/studio" element={<Studio />} />
 
                         <Route path="/video/:videoId" element={<VideoDetail />} />
+                        
+                       <Route path="/playlists" element={<Playlists />} />
                         
                     </Route>
                 </Route>

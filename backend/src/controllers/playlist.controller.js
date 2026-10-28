@@ -31,6 +31,65 @@ const createPlaylist = asyncHandler(async (req, res) => {
         .json(new ApiResponse(201, playlist, "Playlist folder generated and locked successfully."));
 });
 
+const getUserPlaylists = asyncHandler(async(req, res)=>{
+    const {userId} = req.params
+    if (!isValidObjectId(userId)) {
+        throw new ApiError(400, "Invalid targeted user parameter identifier path matrix.");
+    }
+    const playlists = await Playlist.find({ owner: userId })
+        .sort({ createdAt: -1 }) // Newest playlists on top
+        .populate({
+            path: "videos",
+            select: "title thumbnail duration views createdAt",
+            populate: {
+                path: "owner",
+                select: "username fullName avatar"
+            }
+        });
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200, 
+                playlists || [], 
+                "User creator channels playlists timeline retrieved successfully!"
+            )
+        );
+
+})
+
+const getPlaylistById = asyncHandler(async (req, res) => {
+    const { playlistId } = req.params;
+
+    if (!isValidObjectId(playlistId)) {
+        throw new ApiError(400, "Invalid targeted playlist identifier parameter format.");
+    }
+
+    const playlist = await Playlist.findById(playlistId)
+        .populate({
+            path: "videos",
+            select: "title description thumbnail duration views createdAt",
+            populate: {
+                path: "owner",
+                select: "username fullName avatar"
+            }
+        });
+
+    if (!playlist) {
+        throw new ApiError(404, "Target playlist vault records not found inside clusters.");
+    }
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200, 
+                playlist, 
+                "Specific detailed playlist vault configuration retrieved successfully!"
+            )
+        );
+});
 
 const addVideoToPlaylist = asyncHandler(async (req, res) => {
     const { playlistId, videoId } = req.params;
@@ -107,4 +166,6 @@ const removeVideoFromPlaylist = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, updatedPlaylist, "Video reference extracted from playlist folder successfully."));
 });
 
-export { createPlaylist, addVideoToPlaylist, removeVideoFromPlaylist };
+
+
+export { createPlaylist, addVideoToPlaylist, removeVideoFromPlaylist, getPlaylistById, getUserPlaylists };
