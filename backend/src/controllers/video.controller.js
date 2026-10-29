@@ -7,6 +7,7 @@ import {ApiError} from "../utils/ApiError.js";
 import {Video} from "../models/video.model.js";
 
 import {uploadOnCloudinary} from "../utils/cloudinary.js";
+import mongoose, { isValidObjectId } from "mongoose";
 
 
 
@@ -71,24 +72,114 @@ const publishAVideo = asyncHandler(async(req, res)=>{
 const getVideoById = asyncHandler(async(req, res)=>{
     const {videoId} = req.params
 
+    const userId = req.user?._id
+
+    if(!isValidObjectId(videoId)){
+        throw new ApiError(400, "Invalid targeted video identifier format.")
+    }
     if(!videoId?.trim()){
         throw new ApiError(400, "Invalid video identification sequence parametere.")
     }
-    const video = await Video.findByIdAndUpdate(
-        videoId,
+
+    const videoStatsPipeline= await Video.aggregate([
         {
-            $inc:{views:1}
+            $match:{
+                _id: new mongoose.Types.ObjectId(videoId)
+            }
         },
         {
-            returnDocument: "after"
+            $lookup:{
+                from: "likes",
+                localField:"_id",
+                foreignField: "video",
+                as:"likes"
+            }
+        },
+        {
+            $lookup:{
+                from:"users",
+                localField:"owner",
+                foreignField:"_id",
+                as:"ownerDetails"
+            }
+        },
+        {
+            $unwind: "$ownerDetails"
+        },
+        {
+            $addFields:{
+                likesCount:{
+                    $size: "$likes"
+                },
+                isLiked:{
+                    $cond:{
+                        if: { $in: [new mongoose.Types.ObjectId(userId), "$likes.likedBy"] }, 
+                        then: true,
+                        else: false
+                    }
+                },
+                owner: {
+                    _id: "$ownerDetails._id",
+                    username: "$ownerDetails.username",
+                    fullName: "$ownerDetails.fullName",
+                    avatar: "$ownerDetails.avatar"
+                }
+
+            }
+        },
+        {
+            $project: {
+                videoFile: 1,
+                thumbnail: 1,
+                title: 1,
+                description: 1,
+                duration: 1,
+                views: 1,
+                createdAt: 1,
+                likesCount: 1,
+                isLiked: 1,
+                owner: 1
+            }
         }
-    ).populate("owner", "username fullname avatar")
-    if(!video){
-        throw new ApiError(404, "Target video does not exist in database cluster.")
+    ]);
+
+    if (!videoStatsPipeline?.length) {
+        throw new ApiError(404, "Target video asset records not found inside clusters bounds.");
     }
-     return res
+
+    const videoDataSnapshot = videoStatsPipeline[0]; // 
+    await Video.findByIdAndUpdate(videoId, {
+        $inc: { views: 1 }
+    });
+
+    return res
         .status(200)
-        .json(new ApiResponse(200, video, "Video insights retrieved and view counter incremented successfully!"));
+        .json(
+            new ApiResponse(
+                200, 
+                videoDataSnapshot, 
+                "Comprehensive single video details analytics blueprint retrieved successfully!"
+            )
+        );
+
+
+
+   
+    // const video = await Video.findByIdAndUpdate(
+    //     videoId,
+    //     {
+    //         $inc:{views:1}
+    //     },
+    //     {
+    //         returnDocument: "after"
+    //     }
+    // ).populate("owner", "username fullname avatar")
+    // if(!video){
+    //     throw new ApiError(404, "Target video does not exist in database cluster.")
+    // }
+    //  return res
+    //     .status(200)
+    //     .json(new ApiResponse(200, video, "Video insights retrieved and view counter incremented successfully!"));
 })
 
 const updateVideoDetails = asyncHandler(async(req, res)=>{
