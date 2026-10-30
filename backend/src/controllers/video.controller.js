@@ -8,6 +8,7 @@ import {Video} from "../models/video.model.js";
 
 import {uploadOnCloudinary} from "../utils/cloudinary.js";
 import mongoose, { isValidObjectId } from "mongoose";
+import { subscribe } from "diagnostics_channel";
 
 
 
@@ -107,6 +108,14 @@ const getVideoById = asyncHandler(async(req, res)=>{
             $unwind: "$ownerDetails"
         },
         {
+            $lookup:{
+                from: "subscriptions",
+                localField:"owner",
+                foreignField: "channel",
+                as:"subscribers"
+            }
+        },
+        {
             $addFields:{
                 likesCount:{
                     $size: "$likes"
@@ -114,6 +123,16 @@ const getVideoById = asyncHandler(async(req, res)=>{
                 isLiked:{
                     $cond:{
                         if: { $in: [new mongoose.Types.ObjectId(userId), "$likes.likedBy"] }, 
+                        then: true,
+                        else: false
+                    }
+                },
+                subscribersCount:{
+                    $size:"$subscribers"
+                },
+                isSubscribed:{
+                    $cond: {
+                        if: { $in: [new mongoose.Types.ObjectId(userId), "$subscribers.subscriber"] }, 
                         then: true,
                         else: false
                     }
@@ -138,6 +157,8 @@ const getVideoById = asyncHandler(async(req, res)=>{
                 createdAt: 1,
                 likesCount: 1,
                 isLiked: 1,
+                subscribersCount: 1,
+                isSubscribed: 1,
                 owner: 1
             }
         }

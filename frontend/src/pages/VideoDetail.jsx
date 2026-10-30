@@ -32,6 +32,10 @@ export default function VideoDetail() {
 
     const [likeActionLoading, setLikeActionLoading] = useState(false)
 
+    const [isSubscribed, setIsSubscribed]= useState(false)
+    const [subscribersCount, setSubscribersCount] = useState(0);
+    const [subActionLoading, setSubActionLoading] = useState(false);
+
 
     // 📡 PIPELINE A: SINGLE VIDEO RECORD METADATA EXTRACTION PIPELINE
     const fetchTargetVideoDetailsPipeline = async () => {
@@ -44,6 +48,9 @@ export default function VideoDetail() {
 
                 setLikesCount(response.data.likesCount || 0)
                 setIsLiked(response.data.isLiked || false)
+
+                setSubscribersCount(response.data.subscribersCount || 0);
+                setIsSubscribed(response.data.isSubscribed || false);
             }
         } catch (err) {
             setError(err?.message || "Failed to establish single video content stream configurations mapping keys.");
@@ -92,6 +99,35 @@ export default function VideoDetail() {
         } finally {
         setLikeActionLoading(false);
         }
+    }
+
+    const handleSubscriptionToggleExecution= async()=>{
+        if(subActionLoading || !video?.owner?._id) return
+
+        try{
+            setSubActionLoading(true)
+
+            const previousIsSubscribedState = isSubscribed
+
+            setIsSubscribed(!previousIsSubscribedState);
+            setSubscribersCount((prev) => previousIsSubscribedState ? prev - 1 : prev + 1);
+            
+            const response = await apiClient.post(`/subscriptions/c/${video.owner._id}`);
+        
+            if (response?.data) {
+            setIsSubscribed(response.data.isSubscribed);
+            if (typeof response.data.subscribersCount === "number") {
+                setSubscribersCount(response.data.subscribersCount);
+            }
+        }
+        } catch(err){
+            setIsSubscribed(isSubscribed);
+        setSubscribersCount(subscribersCount);
+        console.error(" [SUBSCRIPTION CORE PERSISTENCE CRASH LOOP]:", err?.message || err);
+    } finally {
+        setSubActionLoading(false);
+    }
+        
     }
 
     const fetchPlaylistsForModal = async () => {
@@ -239,9 +275,26 @@ export default function VideoDetail() {
 
                         {/* Interactive Handshake Action Triggers Button Wrapper */}
                         <div className="flex items-center gap-3 self-end sm:self-center">
-                            <button className="rounded-xl bg-red-600 px-5 py-2.5 text-xs font-black text-white shadow-lg shadow-red-600/10 transition-all duration-200 active:scale-95 hover:bg-red-700">
-                                Subscribe Channel
-                            </button>
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+    <div className="text-right sm:text-left">
+        <span className="text-[10px] uppercase font-extrabold tracking-widest text-zinc-500 block">Subscribers metrics</span>
+        <span className="text-xs font-black text-white bg-zinc-800 border border-zinc-700 rounded-lg px-2 py-0.5 shadow-inner">
+            {subscribersCount.toLocaleString()}
+        </span>
+    </div>
+    
+    <button 
+        onClick={handleSubscriptionToggleExecution}
+        disabled={subActionLoading}
+        className={`rounded-xl px-5 py-2.5 text-xs font-black transition-all duration-200 active:scale-95 shadow-lg border ${
+            isSubscribed 
+                ? "bg-zinc-800 text-zinc-400 border-zinc-700 hover:bg-zinc-700 hover:text-white" 
+                : "bg-white text-black border-white hover:bg-zinc-200 shadow-white/5"
+        }`}
+    >
+        {isSubscribed ? "✓ Subscribed Channel" : "🔔 Subscribe"}
+    </button>
+</div>
 
                             <button 
                                 onClick={handleVideoLikeToggleExecution}
