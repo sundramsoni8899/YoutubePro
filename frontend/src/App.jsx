@@ -15,6 +15,8 @@ import Playlists from "./pages/Playlists.jsx";
 
 import ChannelProfile from "./pages/ChannelProfile.jsx"; 
 
+import WatchHistory from "./pages/WatchHistory.jsx";
+
 export default function App() {
     const { isAuthenticated, loading } = useAuth();
 
@@ -50,6 +52,8 @@ export default function App() {
                        <Route path="/playlists" element={<Playlists />} />
 
                         <Route path="/channel/:username" element={<ChannelProfile />} />
+
+                        <Route path="/history" element={<WatchHistory />} />
                         
                     </Route>
                 </Route>

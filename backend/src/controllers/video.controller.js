@@ -10,6 +10,8 @@ import {uploadOnCloudinary} from "../utils/cloudinary.js";
 import mongoose, { isValidObjectId } from "mongoose";
 import { subscribe } from "diagnostics_channel";
 
+import {User} from "../models/user.model.js";
+
 
 
 const publishAVideo = asyncHandler(async(req, res)=>{
@@ -173,6 +175,20 @@ const getVideoById = asyncHandler(async(req, res)=>{
         $inc: { views: 1 }
     });
 
+    if (userId) {
+        await User.findByIdAndUpdate(userId, {
+            $pull: { watchHistory: new mongoose.Types.ObjectId(videoId) }
+        });
+        await User.findByIdAndUpdate(userId, {
+            $push: {
+                watchHistory: {
+                    $each: [new mongoose.Types.ObjectId(videoId)],
+                    $position: 0
+                }
+            }
+        });
+    }
+
     return res
         .status(200)
         .json(
@@ -202,6 +218,10 @@ const getVideoById = asyncHandler(async(req, res)=>{
     //     .status(200)
     //     .json(new ApiResponse(200, video, "Video insights retrieved and view counter incremented successfully!"));
 })
+
+
+
+
 
 const updateVideoDetails = asyncHandler(async(req, res)=>{
     const {videoId}= req.params;

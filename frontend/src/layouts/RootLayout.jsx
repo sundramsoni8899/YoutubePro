@@ -63,7 +63,13 @@ export default function RootLayout() {
                             <Link to={`/channel/${user.username}`} className="block cursor-pointer rounded-lg px-3 py-2 font-medium transition-all hover:bg-zinc-800 hover:text-white">
                                 👤 My Channel Profile
                             </Link>
+
+                            
                         )}
+
+                        <Link to="/history" className="block cursor-pointer rounded-lg px-3 py-2 font-medium transition-all hover:bg-zinc-800 hover:text-white">
+    🕰️ Watch History
+</Link>
                     </nav>
                 </aside>
 
