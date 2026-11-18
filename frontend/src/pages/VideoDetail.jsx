@@ -154,7 +154,7 @@ export default function VideoDetail() {
         }
     }, [videoId]);
 
-    // 🚀 ACTION TRIGGER 1: SAVE AND ADD FRESH TEXT COMMENT TO CURRENT VIDEO DOCUMENT
+    //  ACTION TRIGGER 1: SAVE AND ADD FRESH TEXT COMMENT TO CURRENT VIDEO DOCUMENT
     const handleCommentSubmission = async (e) => {
         e.preventDefault();
         if (!newCommentText.trim()) return;
@@ -175,7 +175,7 @@ export default function VideoDetail() {
         }
     };
 
-    // 🚀 ACTION TRIGGER 2: DELETE AND ERASE AN AUTHENTICATED CONTROLLED COMMENT CELL
+    //  ACTION TRIGGER 2: DELETE AND ERASE AN AUTHENTICATED CONTROLLED COMMENT CELL
     const handleCommentDeletion = async (commentId) => {
         if (!window.confirm("Are you strictly sure you want to permanently eliminate this comment node entry?")) return;
 
@@ -215,7 +215,7 @@ export default function VideoDetail() {
     if (error || !video) {
         return (
             <div className="mx-auto max-w-4xl rounded-2xl border border-zinc-800 bg-[#161616] p-8 text-center text-zinc-400 my-6">
-                <span className="text-3xl block mb-2">⚠️</span>
+                <span className="text-3xl block mb-2"></span>
                 {error || "Target video metadata reference indices could not be resolved crossing database nodes."}
                 <div className="mt-4">
                     <Link to="/home" className="text-xs font-bold text-red-500 hover:underline">◀ Return to Home Feeds</Link>
@@ -226,7 +226,7 @@ export default function VideoDetail() {
     return (
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 px-1 py-2 sm:px-4 text-[#f1f1f1] antialiased select-text relative">
             
-            {/* 📺 MAIN STREAM WINDOW LAYOUT CELL PANELS GRID CONTAINER (LEFT TIERS) */}
+            {/*  MAIN STREAM WINDOW LAYOUT CELL PANELS GRID CONTAINER (LEFT TIERS) */}
             <div className="space-y-4 lg:col-span-2">
                 
                 {/* ADVANCED HTML5 CONTROLS INTEGRATED VIDEO LAYER WRAPPER */}
@@ -318,7 +318,7 @@ export default function VideoDetail() {
                                 onClick={fetchPlaylistsForModal}
                                 className="rounded-xl bg-zinc-800 hover:bg-zinc-700 px-4 py-2.5 text-xs font-black text-white shadow-md transition-all duration-200 active:scale-95 flex items-center gap-1.5 border border-zinc-700"
                             >
-                                <span>💾 Save to Playlist</span>
+                                <span> Save to Playlist</span>
                             </button>
                         </div>
                     </div>
@@ -332,13 +332,13 @@ export default function VideoDetail() {
 
                 </div>
             </div>
-            {/* 💬 MULTI-STAGE COMPOSITE DISCUSSION TIMELINE FEED LAYOUT BOARDS CONTAINER (RIGHT TIERS) */}
+            {/*  MULTI-STAGE COMPOSITE DISCUSSION TIMELINE FEED LAYOUT BOARDS CONTAINER (RIGHT TIERS) */}
             <div className="flex flex-col space-y-4 lg:col-span-1 rounded-2xl border border-zinc-800 bg-[#161616] p-5 shadow-2xl max-h-[85vh] transition-all hover:border-zinc-700">
                 
                 {/* Header Metrics Title Counters Box */}
                 <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
                     <h3 className="text-md font-black text-white tracking-tight flex items-center gap-2">
-                        <span>💬 Discussion Pipeline Board</span>
+                        <span> Discussion Pipeline Board</span>
                     </h3>
                     <span className="rounded-xl bg-zinc-900 px-3 py-1 text-xs font-black text-zinc-400 border border-zinc-800 tracking-wider shadow-inner">
                         {comments.length} entries
@@ -407,7 +407,7 @@ export default function VideoDetail() {
                     )}
                 </div>
             </div>
-            {/* 🛡️ SELECT PLAYLIST MODAL POPUP */}
+            {/*  SELECT PLAYLIST MODAL POPUP */}
             {isAddToPlaylistOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-4 backdrop-blur-sm animate-fadeIn">
                     <div className="w-full max-w-sm rounded-2xl border border-zinc-800 bg-[#161616] p-6 shadow-2xl space-y-4">

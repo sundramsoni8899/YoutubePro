@@ -13,6 +13,8 @@ import Studio from "./pages/Studio.jsx";
 import VideoDetail from "./pages/VideoDetail.jsx";
 import Playlists from "./pages/Playlists.jsx";
 
+import ChannelProfile from "./pages/ChannelProfile.jsx"; 
+
 export default function App() {
     const { isAuthenticated, loading } = useAuth();
 
@@ -46,6 +48,8 @@ export default function App() {
                         <Route path="/video/:videoId" element={<VideoDetail />} />
                         
                        <Route path="/playlists" element={<Playlists />} />
+
+                        <Route path="/channel/:username" element={<ChannelProfile />} />
                         
                     </Route>
                 </Route>

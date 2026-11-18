@@ -68,7 +68,7 @@ export default function studio(){
                 <p className="text-sm text-zinc-400 mt-1">Real-time hardware level data mining insights cluster</p>
             </div>
 
-            {/* 📊 THE MASTERS QUANTUM STATISTICS COUNTER GRID LAYOUT */}
+            {/*  THE MASTERS QUANTUM STATISTICS COUNTER GRID LAYOUT */}
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
                 {analyticsTiles.map((tile) => (
                     <div 
@@ -96,7 +96,7 @@ export default function studio(){
 
             {/* Empty Context Pipeline Info Shell Section underneath for aesthetic balance */}
             <div className="rounded-2xl border border-zinc-800 bg-[#161616] p-6 text-zinc-400">
-                <h3 className="text-md font-bold text-white mb-2">💡 Core Optimization Insights Logs</h3>
+                <h3 className="text-md font-bold text-white mb-2"> Core Optimization Insights Logs</h3>
                 <p className="text-sm text-zinc-400 leading-relaxed">
                     This analytical dashboard bypasses memory intensive client side calculations loops. The calculations are evaluated using native high performance B-Tree indices mapping direct inside the isolated database server clusters layer, ensuring sub-second response times under concurrent heavy loads scenarios [🔗].
                 </p>

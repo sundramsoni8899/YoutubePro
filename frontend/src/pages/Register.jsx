@@ -28,7 +28,7 @@ export default function Register() {
         setError("");
         setSubmitLoading(true);
 
-        console.log("🚀 [DEBUG]: Register Form Submitted!");
+        console.log(" [DEBUG]: Register Form Submitted!");
 
         if (!formData.username || !formData.email || !formData.fullName || !formData.password) {
             setError("All text configuration fields are strictly required.");
@@ -58,7 +58,7 @@ export default function Register() {
 
             console.log("📡 [DEBUG]: Sending signup request payload...");
             const regResponse = await apiClient.post("/users/register", multipartPayload);
-            console.log("🟢 [DEBUG]: Registration Server Response:", regResponse);
+            console.log(" [DEBUG]: Registration Server Response:", regResponse);
 
             if (regResponse) {
                 console.log("📡 [DEBUG]: Initiating auto-login handshake...");
@@ -68,7 +68,7 @@ export default function Register() {
                 });
 
                 const loginData = loginResponse?.data || loginResponse;
-                console.log("🟢 [DEBUG]: Login Server Response:", loginData);
+                console.log(" [DEBUG]: Login Server Response:", loginData);
 
                 if (loginData?.user) {
                     setUser(loginData.user);
@@ -79,7 +79,7 @@ export default function Register() {
                 }
             }
         } catch (err) {
-            console.error("⛔ [CRITICAL PIPELINE EXCEPTION]:", err);
+            console.error(" [CRITICAL PIPELINE EXCEPTION]:", err);
             setError(err?.message || err?.response?.data?.message || "Account initialization rejected.");
         } finally {
             setSubmitLoading(false);
@@ -99,7 +99,7 @@ export default function Register() {
                 <form className="mt-6 space-y-4" onSubmit={handleRegisterSubmitExecution}>
                     {error && (
                         <div className="rounded-xl bg-red-900/30 p-4 border border-red-500/40 text-sm font-medium text-red-400">
-                            ⚠️ {error}
+                             {error}
                         </div>
                     )}
 
@@ -147,7 +147,7 @@ export default function Register() {
                     </div>
 
                     <div className="pt-2">
-                        {/* 🔥 FIXED BUTTON SYNTAX EXPRESSION */}
+                        {/*  FIXED BUTTON SYNTAX EXPRESSION */}
                         <button
                             type="submit"
                             disabled={submitLoading}

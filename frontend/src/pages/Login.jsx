@@ -16,7 +16,7 @@ export default function Login() {
     const { setIsAuthenticated, setUser } = useAuth();
     const navigate = useNavigate();
 
-    // ⚙️ UNIVERSAL INPUT PARAMETERS BINDING HANDLER
+    //  UNIVERSAL INPUT PARAMETERS BINDING HANDLER
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
@@ -25,7 +25,7 @@ export default function Login() {
         }));
     };
 
-    // 🚀 ASYNCHRONOUS FORM PROCESSING HANDLER TRANSACTION
+    //  ASYNCHRONOUS FORM PROCESSING HANDLER TRANSACTION
     const handleLoginExecutionSubmit = async (e) => {
         e.preventDefault();
         setError("");
@@ -53,7 +53,7 @@ export default function Login() {
             // Fire transport layer action straight to backend endpoint channel port 7000
             const response = await apiClient.post("/users/login", payload);
 
-            // 🚨 Sahi structure check: Hamein ApiResponse ke data se user uthana hai
+            //  Sahi structure check: Hamein ApiResponse ke data se user uthana hai
             if (response?.success) {
                 setUser(response.data.user);
                 setIsAuthenticated(true);
@@ -82,7 +82,7 @@ export default function Login() {
                     {/* ALERT COMPONENT SHUNT LOGIC ERROR MESSAGES CONTAINER */}
                     {error && (
                         <div className="rounded-xl bg-red-900/30 p-4 border border-red-500/40 text-sm font-medium text-red-400 animate-shake">
-                            ⚠️ {error}
+                             {error}
                         </div>
                     )}
 
@@ -127,7 +127,7 @@ export default function Login() {
                     </div>
 
                     <div>
-                        {/* 🛠️ Cleaned duplicate buttons - Sirf ek perfect single action button rakha! */}
+                        {/*  Cleaned duplicate buttons - Sirf ek perfect single action button rakha! */}
                         <button
                             type="submit"
                             disabled={submitLoading}
@@ -139,7 +139,7 @@ export default function Login() {
                         </button>
                     </div>
 
-                    {/* 🔥 THE NEW USER REGISTRATION LINK TRIGGER (Properly closed syntax alignment) */}
+                    {/*  THE NEW USER REGISTRATION LINK TRIGGER (Properly closed syntax alignment) */}
                     <p className="mt-4 text-center text-xs text-zinc-400">
                         New user to YouTube PRO?{" "}
                         <Link 

@@ -44,12 +44,12 @@ export default function Playlists(){
 
     const handleCreatePlaylistSubmit = async(e)=>{
         e.preventDefault()
-        if(!newPlaylistName.trim() || !newPlaylistDesc.trim()) return
+        if(!newPlaylistName.trim() || !newPlaylistDescription.trim()) return
 
         try{
             const response = await apiClient.post("/playlists", {
                 name: newPlaylistName.trim(),
-                description: newPlaylistDesc.trim()
+                description: newPlaylistDescription.trim()
             })
             if(response?.data){
                 setNewPlaylistName("")
@@ -107,7 +107,7 @@ export default function Playlists(){
                 <div className="rounded-xl bg-red-900/10 p-4 border border-red-500/30 text-xs font-bold text-red-400">⚠️ {error}</div>
             )}
 
-            {/* 📁 INTERACTIVE FOLDERS HOVER CELLS RESPONSIVE LAYOUT GRID SECTION */}
+            {/*  INTERACTIVE FOLDERS HOVER CELLS RESPONSIVE LAYOUT GRID SECTION */}
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {playlists.map((folder) => (
                     <div 
@@ -136,7 +136,7 @@ export default function Playlists(){
                 )}
             </div>
 
-            {/* 🏛️ DRILL DOWN SUBSYSTEM VIEWPORT: EXPANDED POPULATED VIDEOS REPOSITORY DRAWER LAYOUT */}
+            {/*  DRILL DOWN SUBSYSTEM VIEWPORT: EXPANDED POPULATED VIDEOS REPOSITORY DRAWER LAYOUT */}
             {selectedPlaylist && (
                 <div className="rounded-2xl border border-zinc-800 bg-[#161616] p-6 shadow-2xl space-y-4 animate-fadeIn">
                     <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
@@ -224,7 +224,7 @@ export default function Playlists(){
 
                             <button 
                                 type="submit" 
-                                disabled={!newPlaylistName.trim() || !newPlaylistDesc.trim()} 
+                                disabled={!newPlaylistName.trim() || !newPlaylistDescription.trim()} 
                                 className="mt-2 flex w-full justify-center rounded-xl bg-white px-4 py-2.5 text-xs font-black text-black transition-all active:scale-95 disabled:opacity-30"
                             >
                                 Register Vault Node

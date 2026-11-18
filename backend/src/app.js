@@ -20,7 +20,7 @@ app.use(cors({
 
 const globalRateLimiter = rateLimit({
     windowMs: 15*60*1000,
-    limit:100,
+    limit:5000,
     message:{
         statusCode: 429,
         success: false,
