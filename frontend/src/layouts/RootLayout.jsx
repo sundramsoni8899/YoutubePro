@@ -1,9 +1,11 @@
-import React, {useState} from "react";
-import { Outlet,Link } from "react-router-dom";
+import React, {useState, useEffect} from "react";
+import { Outlet,Link, useNavigate, useSearchParams } from "react-router-dom";
 
 import VideoUploadModal from "../components/videoUploadModal.jsx";
 
 import {useAuth} from "../context/AuthContext.jsx";
+
+import {useDebounce} from "../hooks/useDebounce.js";
 
 
 
@@ -13,6 +15,24 @@ export default function RootLayout() {
 
     const {user} = useAuth()
 
+    const navigate = useNavigate()
+
+    const [searchParams] =useSearchParams()
+
+    const [searchInput, setSearchInput] = useState(searchParams.get("query") || "")
+
+    const debouncedSearch = useDebounce(searchInput, 500)
+
+    useEffect(()=>{
+        const trimmed = debouncedSearch.trim()
+        if(trimmed){
+            navigate(`/home?query=${encodeURIComponent(trimmed)} `)
+        } else if(searchParams.has("query")){
+            navigate("/home")
+        }   
+    },[debouncedSearch])
+
+
     const handleUploadSuccessRefresh= ()=>{
         window.location.reload()
     }
@@ -21,6 +41,26 @@ export default function RootLayout() {
             
             <header className="sticky top-0 z-50 flex h-14 items-center justify-between border-b border-zinc-800 bg-[#0f0f0f] px-4 font-semibold shadow-md">
                 <div className="text-xl font-bold tracking-tight text-white">YouTube<span className="text-red-600 font-extrabold text-sm ml-0.5">PRO</span></div>
+
+                <div className="relative flex w-full max-w-md items-center">
+                    <input
+                        type="text"
+                        value={searchInput}
+                        onChange={(e) => setSearchInput(e.target.value)}
+                        placeholder="Search videos by title or description..."
+                        className="w-full rounded-full border border-zinc-800 bg-[#161616] py-1.5 pl-4 pr-9 text-xs font-medium text-white placeholder-zinc-500 outline-none transition focus:border-zinc-600"
+                    />
+                    {searchInput ? (
+                        <button
+                            onClick={() => setSearchInput("")}
+                            className="absolute right-3 text-xs font-bold text-zinc-400 hover:text-white"
+                        >
+                            ✕
+                        </button>
+                    ) : (
+                        <span className="pointer-events-none absolute right-3 text-xs text-zinc-500">🔍</span>
+                    )}
+                </div>
 
                 <button 
                    onClick={()=>setIsUploadOpen(true)} className="rounded-xl bg-red-600 px-4 py-1.5 text-xs font-bold text-white transition-all active:scale-95 shadow-lg shadow-red-600/20 hover:bg-red-700">

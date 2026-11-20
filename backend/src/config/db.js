@@ -14,6 +14,8 @@ const connectDB = async ()=>{
         const connectionInstance = await mongoose.connect(`${process.env.MONGODB_URI}/${DB_NAME}`)
 
         console.log(`\n MongoDB connected: ${connectionInstance.connection.host}`)
+        // await mongoose.connection.collection("likes").dropIndexes();
+        // console.log(" Old 'likes' indexes dropped successfully!");
     }
     catch(error){
         console.error("Error connecting to MongoDB:", error)

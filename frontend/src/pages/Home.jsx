@@ -4,14 +4,14 @@ import apiClient from "../api/apiClient.js"
 
 import { formatDistanceToNow } from "../utils/formatDistanceToNow.js"
 
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 
 export default function Home(){
     const [videos, setVideos] = useState([])
 
     const [loading, setLoading] = useState(true)
 
-    const [error, SetError] = useState("")
+    const [error, setError] = useState("")
 
     const [paginationInfo, setPaginationInfo] = useState({
         page: 1,
@@ -20,11 +20,24 @@ export default function Home(){
 
     const navigate = useNavigate()
 
+    const [searchParams] = useSearchParams()
+    const searchQuery = searchParams.get("query") || "";
+
+
+
     useEffect(()=>{
         const fetchHomeFeedVideos = async()=>{
             try{
                 setLoading(true);
-                const response = await apiClient.get(`/videos/?page=${paginationInfo.page}&limit=12`)
+
+                setError("");
+
+                
+                const endpoint = searchQuery
+                    ? `/videos?page=${paginationInfo.page}&limit=12&query=${encodeURIComponent(searchQuery)}`
+                    : `/videos?page=${paginationInfo.page}&limit=12`;
+                    
+                const response = await apiClient.get(endpoint)
 
                 if(response?.data?.docs){
                     setVideos(response.data.docs)
@@ -34,13 +47,13 @@ export default function Home(){
                     })
                 }
             } catch(err){
-                SetError(err?.message || "Failed to establish aggregate data streams. Link failed.")
+                setError(err?.message || "Failed to establish aggregate data streams. Link failed.")
             } finally{
                 setLoading(false)
             }
         }
         fetchHomeFeedVideos()
-    }, [])
+    }, [paginationInfo.page, searchQuery])
 
     if(loading){
         return(
